@@ -1,9 +1,3 @@
-# -*- coding: utf-8 -*-
-# -*- coding: utf-8 -*-
-# @Author  : Shuai Yuan
-# @File    : SCTransNet.py
-# @Software: PyCharm
-# coding=utf-8
 from __future__ import absolute_import
 from __future__ import division
 from __future__ import print_function
@@ -621,7 +615,7 @@ class Res_block(nn.Module):
         return out
 
 
-class SCTransNet(nn.Module):
+class Swan(nn.Module):
     def __init__(self, config, n_channels=1, n_classes=1, img_size=256, vis=False, mode='train', deepsuper=True):
         super().__init__()
         self.vis = vis
@@ -713,7 +707,7 @@ class SCTransNet(nn.Module):
 
 if __name__ == '__main__':
     config_vit = get_CTranS_config()
-    model = SCTransNet(config_vit, mode='train', deepsuper=True)
+    model = Swan(config_vit, mode='train', deepsuper=True)
     model = model
     print(model)
     with open("model_structure.txt", "w") as f:
