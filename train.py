@@ -11,14 +11,10 @@ from metrics import *
 from utils import *
 import model.Config as config
 from torch.utils.tensorboard import SummaryWriter
-from model.SCTransNet import SCTransNet as SCTransNet
-from model.SCTransNetSSA1 import SCTransNetSSA1 as SCTransNetSSA1
-from model.SCTransNetSSA2 import SCTransNetSSA2 as SCTransNetSSA2
-from model.SCTransNetRDCA1 import SCTransNetRDCA1 as SCTransNetRDCA1
-from model.SCTransNetRDCA2 import SCTransNetRDCA2 as SCTransNetRDCA2
+from model.Swan import Swan as Swan
 
 parser = argparse.ArgumentParser(description="PyTorch BasicIRSTD train")
-parser.add_argument("--model_names", default=['SCTransNet'], type=list)
+parser.add_argument("--model_names", default=['Swan'], type=list)
 parser.add_argument("--dataset_names", default=['real'], type=list)
 # SIRST3： NUAA NUDT IRSTD-1K
 parser.add_argument("--optimizer_name", default='Adam', type=str, help="optimizer name: AdamW, Adam, Adagrad, SGD")
@@ -31,7 +27,7 @@ parser.add_argument("--dataset_dir", default=r'./datasets')
 parser.add_argument("--batchSize", type=int, default=16, help="Training batch sizse")
 parser.add_argument("--patchSize", type=int, default=256, help="Training patch size")
 parser.add_argument("--save", default=r'./log', type=str, help="Save path of checkpoints")
-parser.add_argument("--log_dir", type=str, default="./otherlogs/SCTransNet", help='path of log files')
+parser.add_argument("--log_dir", type=str, default="./otherlogs/Swan", help='path of log files')
 parser.add_argument("--img_norm_cfg", default=None, type=dict)
 parser.add_argument("--threads", type=int, default=0, help="Number of threads for data loader to use")
 parser.add_argument("--threshold", type=float, default=0.5, help="Threshold for test")
@@ -83,7 +79,7 @@ def train():
         # for i in range(len(opt.scheduler_settings['step'])):
         #     opt.scheduler_settings['step'][i] = opt.scheduler_settings['step'][i] - ckpt['epoch']
 
-    ### Default settings of SCTransNet
+    ### Default settings of Swan
     if opt.optimizer_name == 'Adam':
         opt.optimizer_settings = {'lr': 0.001}
         opt.scheduler_name = 'CosineAnnealingLR'
@@ -282,31 +278,31 @@ class Net(nn.Module):
         self.model_name = model_name
         # ************************************************loss*************************************************#
         self.cal_loss = nn.BCELoss(size_average=True)
-        if model_name == 'SCTransNet':
+        if model_name == 'Swan':
             if mode == 'train':
-                self.model = SCTransNet(config_vit, mode='train', deepsuper=True)
+                self.model = Swan(config_vit, mode='train', deepsuper=True)
             else:
-                self.model = SCTransNet(config_vit, mode='test', deepsuper=True)
-        elif model_name == 'SCTransNetSSA1':
+                self.model = Swan(config_vit, mode='test', deepsuper=True)
+        elif model_name == 'SwanSSA1':
             if mode == 'train':
-                self.model = SCTransNetSSA1(config_vit, mode='train', deepsuper=True)
+                self.model = SwanSSA1(config_vit, mode='train', deepsuper=True)
             else:
-                self.model = SCTransNetSSA1(config_vit, mode='test', deepsuper=True)
-        elif model_name == 'SCTransNetSSA2':
+                self.model = SwanSSA1(config_vit, mode='test', deepsuper=True)
+        elif model_name == 'SwanSSA2':
             if mode == 'train':
-                self.model = SCTransNetSSA2(config_vit, mode='train', deepsuper=True)
+                self.model = SwanSSA2(config_vit, mode='train', deepsuper=True)
             else:
-                self.model = SCTransNetSSA2(config_vit, mode='test', deepsuper=True)
-        elif model_name == 'SCTransNetRDCA1':
+                self.model = SwanSSA2(config_vit, mode='test', deepsuper=True)
+        elif model_name == 'SwanRDCA1':
             if mode == 'train':
-                self.model = SCTransNetRDCA1(config_vit, mode='train', deepsuper=True)
+                self.model = SwanRDCA1(config_vit, mode='train', deepsuper=True)
             else:
-                self.model = SCTransNetRDCA1(config_vit, mode='test', deepsuper=True)
-        elif model_name == 'SCTransNetRDCA2':
+                self.model = SwanRDCA1(config_vit, mode='test', deepsuper=True)
+        elif model_name == 'SwanRDCA2':
             if mode == 'train':
-                self.model = SCTransNetRDCA2(config_vit, mode='train', deepsuper=True)
+                self.model = SwanRDCA2(config_vit, mode='train', deepsuper=True)
             else:
-                self.model = SCTransNetRDCA2(config_vit, mode='test', deepsuper=True)
+                self.model = SwanRDCA2(config_vit, mode='test', deepsuper=True)
     def forward(self, img):
         return self.model(img)
 
